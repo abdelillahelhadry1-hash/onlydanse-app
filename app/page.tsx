@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 export default function HomeSearchBar() {
@@ -13,6 +13,11 @@ export default function HomeSearchBar() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+
+  const [suggestions, setSuggestions] = useState([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+
+  const dropdownRef = useRef(null);
 
   const danceStyles = [
     "Bachata",
@@ -48,6 +53,49 @@ export default function HomeSearchBar() {
     setStartDate(today.toISOString().split("T")[0]);
     setEndDate(nextWeek.toISOString().split("T")[0]);
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setSuggestions([]);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Fetch city suggestions (debounced)
+  useEffect(() => {
+    if (city.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+
+    const delay = setTimeout(() => {
+      fetch(
+        `https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix=${city}&limit=6`,
+        {
+          method: "GET",
+          headers: {
+            "X-RapidAPI-Key": process.env.NEXT_PUBLIC_GEODB_KEY,
+            "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
+          },
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          const results = data.data.map((item) => ({
+            city: item.city,
+            country: item.country,
+          }));
+          setSuggestions(results);
+        })
+        .catch(() => setSuggestions([]));
+    }, 300);
+
+    return () => clearTimeout(delay);
+  }, [city]);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -139,14 +187,33 @@ export default function HomeSearchBar() {
           )}
         </div>
 
-        {/* City */}
-        <input
-          type="text"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          placeholder="City"
-          className="border rounded-lg p-3 text-gray-700 w-full md:w-40 bg-gray-50"
-        />
+        {/* City Autocomplete */}
+        <div className="relative w-full md:w-40" ref={dropdownRef}>
+          <input
+            type="text"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            placeholder="City"
+            className="border rounded-lg p-3 text-gray-700 w-full bg-gray-50"
+          />
+
+          {suggestions.length > 0 && (
+            <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-lg mt-1 z-30">
+              {suggestions.map((item, index) => (
+                <div
+                  key={index}
+                  onClick={() => {
+                    setCity(`${item.city}, ${item.country}`);
+                    setSuggestions([]);
+                  }}
+                  className="p-3 hover:bg-gray-100 cursor-pointer text-gray-700"
+                >
+                  {item.city}, {item.country}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Search Button */}
         <button
