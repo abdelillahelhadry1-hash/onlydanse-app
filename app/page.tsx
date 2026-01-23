@@ -6,19 +6,12 @@ import { useRouter } from "next/navigation";
 export default function HomeSearchBar() {
   const router = useRouter();
 
-  // Auto‑detected values
   const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
-  const [language, setLanguage] = useState("");
-  const [timezone, setTimezone] = useState("");
-
-  // Filters
   const [danceStyle, setDanceStyle] = useState("");
   const [eventType, setEventType] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  // Dance styles (priority first)
   const danceStyles = [
     "Bachata",
     "Salsa",
@@ -34,21 +27,15 @@ export default function HomeSearchBar() {
 
   const eventTypes = ["Event", "Workshop", "Class", "Festival"];
 
-  // Auto-detect city, language, timezone
   useEffect(() => {
-    setLanguage(navigator.language || "en");
-    setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
-
     fetch("https://ipapi.co/json/")
       .then((res) => res.json())
       .then((data) => {
         setCity(data.city || "");
-        setCountry(data.country_name || "");
       })
       .catch(() => {});
   }, []);
 
-  // Default date range: today → +7 days
   useEffect(() => {
     const today = new Date();
     const nextWeek = new Date();
@@ -58,7 +45,6 @@ export default function HomeSearchBar() {
     setEndDate(nextWeek.toISOString().split("T")[0]);
   }, []);
 
-  // Build search URL
   const handleSearch = () => {
     const params = new URLSearchParams();
 
@@ -73,22 +59,18 @@ export default function HomeSearchBar() {
 
   return (
     <div className="w-full flex flex-col items-center px-4 mt-10">
-      {/* HERO TITLE */}
       <h1 className="text-3xl md:text-5xl font-bold text-center mb-6">
         Find dance classes & events near you
       </h1>
 
-      {/* SEARCH BOX */}
-      <div className="bg-white shadow-lg rounded-xl p-6 w-full max-w-4xl space-y-4">
-
-        {/* Row 1: Dance Style + Event Type */}
+      <div className="bg-white shadow-md rounded-xl p-6 w-full max-w-3xl space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <select
             value={danceStyle}
             onChange={(e) => setDanceStyle(e.target.value)}
-            className="border rounded-lg p-3 w-full"
+            className="border rounded-lg p-3 w-full text-gray-700"
           >
-            <option value="">Dance style (optional)</option>
+            <option value="">Choose dance style</option>
             {danceStyles.map((style) => (
               <option key={style} value={style}>
                 {style}
@@ -99,9 +81,9 @@ export default function HomeSearchBar() {
           <select
             value={eventType}
             onChange={(e) => setEventType(e.target.value)}
-            className="border rounded-lg p-3 w-full"
+            className="border rounded-lg p-3 w-full text-gray-700"
           >
-            <option value="">Event type (optional)</option>
+            <option value="">Choose event type</option>
             {eventTypes.map((type) => (
               <option key={type} value={type}>
                 {type}
@@ -110,46 +92,34 @@ export default function HomeSearchBar() {
           </select>
         </div>
 
-        {/* Row 2: Date Range */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="text-sm font-medium">Start date</label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="border rounded-lg p-3 w-full mt-1"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium">End date</label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="border rounded-lg p-3 w-full mt-1"
-            />
-          </div>
-        </div>
-
-        {/* Row 3: Location */}
-        <div>
           <input
-            type="text"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder="City"
-            className="border rounded-lg p-3 w-full"
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="border rounded-lg p-3 w-full text-gray-700"
+          />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="border rounded-lg p-3 w-full text-gray-700"
           />
         </div>
 
-        {/* Search Button */}
+        <input
+          type="text"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          placeholder="Enter city"
+          className="border rounded-lg p-3 w-full text-gray-700"
+        />
+
         <button
           onClick={handleSearch}
-          className="w-full bg-black text-white py-3 rounded-lg text-lg font-semibold hover:bg-gray-800 transition"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg text-lg font-semibold transition"
         >
-          Search
+          🔍 Search
         </button>
       </div>
     </div>
