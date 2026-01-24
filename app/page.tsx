@@ -15,7 +15,6 @@ export default function HomeSearchBar() {
   const [endDate, setEndDate] = useState("");
 
   const [suggestions, setSuggestions] = useState([]);
-  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
 
   const dropdownRef = useRef(null);
 
@@ -65,36 +64,15 @@ export default function HomeSearchBar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Fetch city suggestions (debounced)
+  // TEMPORARY: Clear suggestions until we add hybrid autocomplete
   useEffect(() => {
     if (city.length < 2) {
       setSuggestions([]);
       return;
     }
 
-    const delay = setTimeout(() => {
-      fetch(
-        `https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix=${city}&limit=6`,
-        {
-          method: "GET",
-          headers: {
-            "X-RapidAPI-Key": process.env.NEXT_PUBLIC_GEODB_KEY,
-            "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
-          },
-        }
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          const results = data.data.map((item) => ({
-            city: item.city,
-            country: item.country,
-          }));
-          setSuggestions(results);
-        })
-        .catch(() => setSuggestions([]));
-    }, 300);
-
-    return () => clearTimeout(delay);
+    // For now, no external API → no suggestions
+    setSuggestions([]);
   }, [city]);
 
   const handleSearch = () => {
@@ -197,6 +175,7 @@ export default function HomeSearchBar() {
             className="border rounded-lg p-3 text-gray-700 w-full bg-gray-50"
           />
 
+          {/* Suggestions will appear here once we add hybrid autocomplete */}
           {suggestions.length > 0 && (
             <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-lg mt-1 z-30">
               {suggestions.map((item, index) => (
