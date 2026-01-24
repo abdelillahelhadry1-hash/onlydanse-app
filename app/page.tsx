@@ -206,3 +206,9 @@ export default function HomeSearchBar() {
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold w-full md:w-auto"
         >
           🔍 Search
+        </button>
+
+      </div>
+    </div>
+  );
+}
