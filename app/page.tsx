@@ -10,7 +10,9 @@ export default function HomePage() {
   const [danceStyle, setDanceStyle] = useState("");
   const [eventType, setEventType] = useState("");
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  // ⭐ FIXED TYPE: can be false | "menu" | "custom"
+  const [showDatePicker, setShowDatePicker] = useState<false | "menu" | "custom">(false);
+
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -149,7 +151,9 @@ export default function HomePage() {
         {/* ⭐ Smart Date Picker */}
         <div className="relative w-full md:w-40">
           <button
-            onClick={() => setShowDatePicker(showDatePicker ? false : "menu")}
+            onClick={() =>
+              setShowDatePicker(showDatePicker === "menu" ? false : "menu")
+            }
             className="border rounded-lg p-3 text-gray-700 w-full text-left bg-gray-50"
           >
             Today
