@@ -1,13 +1,11 @@
 // app/events/[id]/page.tsx
 
-interface EventPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default async function EventDetailPage({ params }: EventPageProps) {
-  const { id } = params;
+export default async function EventDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params;
 
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/events/${id}`;
 
@@ -118,4 +116,3 @@ export default async function EventDetailPage({ params }: EventPageProps) {
     </div>
   );
 }
-
