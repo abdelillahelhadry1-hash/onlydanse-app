@@ -1,7 +1,11 @@
 // app/events/[id]/page.tsx
 
-export async function generateMetadata({ params }) {
-  const { id } = await params;
+// Correctly typed metadata function
+export async function generateMetadata(
+  props: { params: { id: string } }
+) {
+  const { id } = props.params;
+
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/events/${id}`;
   const res = await fetch(url, { cache: "no-store" });
   const event = res.ok ? await res.json() : null;
@@ -19,12 +23,13 @@ export async function generateMetadata({ params }) {
   };
 }
 
+// Correctly typed page component
 export default async function EventDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>
+  params: { id: string };
 }) {
-  const { id } = await params;
+  const { id } = params;
 
   const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/events/${id}`;
   const res = await fetch(url, { cache: "no-store" });
