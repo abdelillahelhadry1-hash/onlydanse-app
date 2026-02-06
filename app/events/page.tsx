@@ -11,17 +11,22 @@ export default async function EventsPage({
     city?: string;
     start?: string;
     end?: string;
+    category?: string;
   };
 }) {
   // Extract filters from URL
-  const { style, type, city, start, end } = searchParams;
+  const { style, type, city, start, end, category } = searchParams;
+
+  // Normalize city (defensive, in case someone hits URL manually)
+  const normalizedCity = city ? city.trim().toLowerCase() : undefined;
 
   // Build query string dynamically
   const params = new URLSearchParams();
 
   if (style) params.set("style", style);
   if (type) params.set("type", type);
-  if (city) params.set("city", city);
+  if (category) params.set("category", category);
+  if (normalizedCity) params.set("city", normalizedCity);
   if (start) params.set("start", start);
   if (end) params.set("end", end);
 
@@ -44,13 +49,10 @@ export default async function EventsPage({
     console.error("Failed to fetch events:", error);
   }
 
-  // Dynamic title
-  const titleCity = city || "your area";
-
   return (
     <div className="max-w-4xl mx-auto py-10 space-y-6">
       <h1 className="text-3xl font-semibold">
-        Events {city ? `in ${city}` : ""}
+        Events {normalizedCity ? `in ${normalizedCity}` : ""}
       </h1>
 
       {events.length === 0 && (
