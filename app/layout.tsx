@@ -1,15 +1,8 @@
-"use client";
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-import { usePathname } from "next/navigation";
-
-import Header from "@/app/components/Header";
-import SearchBar from "@/app/components/SearchBar";
-import CategoryNav from "@/app/components/CategoryNav";
-import Footer from "@/app/components/Footer";
+import LayoutClient from "@/app/components/LayoutClient";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,38 +19,15 @@ export const metadata: Metadata = {
   description: "Find dance events worldwide",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const pathname = usePathname();
-  const isHome = pathname === "/";
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
-      >
-        {/* Global Header (always visible) */}
-        <Header />
-
-        {/* Full hero stack only on homepage */}
-        {isHome && (
-          <>
-            <SearchBar />
-            <CategoryNav />
-          </>
-        )}
-
-        {/* Page Content */}
-        <main className="pt-10 px-4">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}>
+        <LayoutClient>
           {children}
-        </main>
-
-        {/* Footer */}
-        <Footer />
+        </LayoutClient>
       </body>
     </html>
   );
 }
+
