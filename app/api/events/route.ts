@@ -6,29 +6,34 @@ export async function GET(req: Request) {
 
   // Accept both city_id and city name
   let city_id = searchParams.get("city_id");
-  const cityName = searchParams.get("city");
+  const rawCityName = searchParams.get("city");
 
   const style_id = searchParams.get("style_id");
   const event_type_id = searchParams.get("event_type_id");
   const from = searchParams.get("from");
   const to = searchParams.get("to");
 
+  // Normalize city name (matches frontend)
+  const cityName = rawCityName
+    ? rawCityName.trim().toLowerCase()
+    : null;
+
   // If city_id is missing but city name is provided → convert it
   if (!city_id && cityName) {
     const { data: cityData, error: cityError } = await supabase
       .from("cities")
-      .select("id")
-      .ilike("formatted_name", `%${cityName}%`) // partial match fix
-      .single();
+      .select("id, formatted_name")
+      .ilike("formatted_name", `%${cityName}%`);
 
-    if (cityError || !cityData) {
+    if (cityError || !cityData || cityData.length === 0) {
       return NextResponse.json(
         { error: "City not found" },
         { status: 404 }
       );
     }
 
-    city_id = cityData.id;
+    // If multiple matches, pick the closest one
+    city_id = cityData[0].id;
   }
 
   // Still no city_id? Then we cannot continue
@@ -83,3 +88,4 @@ export async function GET(req: Request) {
 
   return NextResponse.json(data);
 }
+
