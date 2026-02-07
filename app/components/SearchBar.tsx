@@ -7,16 +7,33 @@ export default function SearchBar() {
   const router = useRouter();
 
   const [city, setCity] = useState("");
-  const [danceStyle, setDanceStyle] = useState("");
-  const [eventType, setEventType] = useState("");
+  const [style_id, setStyleId] = useState("");
+  const [event_type_id, setEventTypeId] = useState("");
   const [showDatePicker, setShowDatePicker] = useState<false | "menu" | "custom">(false);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const danceStyles = ["Bachata", "Salsa", "Kizomba", "Zouk", "Tango", "Ballroom", "Hip-Hop", "K-Pop", "Afro", "Other"];
-  const eventTypes = ["Event", "Workshop", "Class", "Festival"];
+  const danceStyles = [
+    { name: "Bachata", id: "bachata" },
+    { name: "Salsa", id: "salsa" },
+    { name: "Kizomba", id: "kizomba" },
+    { name: "Zouk", id: "zouk" },
+    { name: "Tango", id: "tango" },
+    { name: "Ballroom", id: "ballroom" },
+    { name: "Hip-Hop", id: "hiphop" },
+    { name: "K-Pop", id: "kpop" },
+    { name: "Afro", id: "afro" },
+    { name: "Other", id: "other" }
+  ];
+
+  const eventTypes = [
+    { name: "Event", id: "event" },
+    { name: "Workshop", id: "workshop" },
+    { name: "Class", id: "class" },
+    { name: "Festival", id: "festival" }
+  ];
 
   // Auto-detect city
   useEffect(() => {
@@ -32,8 +49,8 @@ export default function SearchBar() {
     const nextWeek = new Date();
     nextWeek.setDate(today.getDate() + 7);
 
-    setStartDate(today.toISOString().split("T")[0]);
-    setEndDate(nextWeek.toISOString().split("T")[0]);
+    setFrom(today.toISOString().split("T")[0]);
+    setTo(nextWeek.toISOString().split("T")[0]);
   }, []);
 
   // Close dropdown when clicking outside
@@ -74,16 +91,16 @@ export default function SearchBar() {
   const handleSearch = () => {
     const params = new URLSearchParams();
 
-    if (danceStyle) params.set("style", danceStyle);
-    if (eventType) params.set("type", eventType);
+    if (style_id) params.set("style_id", style_id);
+    if (event_type_id) params.set("event_type_id", event_type_id);
 
     if (city) {
       const normalizedCity = city.trim().toLowerCase();
       params.set("city", normalizedCity);
     }
 
-    if (startDate) params.set("start", startDate);
-    if (endDate) params.set("end", endDate);
+    if (from) params.set("from", from);
+    if (to) params.set("to", to);
 
     router.push(`/events?${params.toString()}`);
   };
@@ -94,25 +111,25 @@ export default function SearchBar() {
 
         {/* Dance Style */}
         <select
-          value={danceStyle}
-          onChange={(e) => setDanceStyle(e.target.value)}
+          value={style_id}
+          onChange={(e) => setStyleId(e.target.value)}
           className="border rounded-lg p-3 text-gray-700 w-full md:w-40 bg-gray-50"
         >
           <option value="">Dance style</option>
           {danceStyles.map((style) => (
-            <option key={style} value={style}>{style}</option>
+            <option key={style.id} value={style.id}>{style.name}</option>
           ))}
         </select>
 
         {/* Event Type */}
         <select
-          value={eventType}
-          onChange={(e) => setEventType(e.target.value)}
+          value={event_type_id}
+          onChange={(e) => setEventTypeId(e.target.value)}
           className="border rounded-lg p-3 text-gray-700 w-full md:w-40 bg-gray-50"
         >
           <option value="">Event type</option>
           {eventTypes.map((type) => (
-            <option key={type} value={type}>{type}</option>
+            <option key={type.id} value={type.id}>{type.name}</option>
           ))}
         </select>
 
@@ -122,18 +139,17 @@ export default function SearchBar() {
             onClick={() => setShowDatePicker(showDatePicker === "menu" ? false : "menu")}
             className="border rounded-lg p-3 text-gray-700 w-full text-left bg-gray-50"
           >
-            Today
+            Dates
           </button>
 
-          {/* Quick menu */}
           {showDatePicker === "menu" && (
             <div className="absolute z-20 bg-white shadow-lg rounded-lg p-2 mt-2 w-48">
               <div
                 className="p-2 hover:bg-gray-100 cursor-pointer rounded"
                 onClick={() => {
                   const today = new Date().toISOString().split("T")[0];
-                  setStartDate(today);
-                  setEndDate(today);
+                  setFrom(today);
+                  setTo(today);
                   setShowDatePicker(false);
                 }}
               >
@@ -146,8 +162,8 @@ export default function SearchBar() {
                   const tomorrow = new Date();
                   tomorrow.setDate(tomorrow.getDate() + 1);
                   const iso = tomorrow.toISOString().split("T")[0];
-                  setStartDate(iso);
-                  setEndDate(iso);
+                  setFrom(iso);
+                  setTo(iso);
                   setShowDatePicker(false);
                 }}
               >
@@ -160,8 +176,8 @@ export default function SearchBar() {
                   const today = new Date();
                   const nextWeek = new Date();
                   nextWeek.setDate(today.getDate() + 7);
-                  setStartDate(today.toISOString().split("T")[0]);
-                  setEndDate(nextWeek.toISOString().split("T")[0]);
+                  setFrom(today.toISOString().split("T")[0]);
+                  setTo(nextWeek.toISOString().split("T")[0]);
                   setShowDatePicker(false);
                 }}
               >
@@ -179,22 +195,21 @@ export default function SearchBar() {
             </div>
           )}
 
-          {/* Custom date picker */}
           {showDatePicker === "custom" && (
             <div className="absolute z-20 bg-white shadow-lg rounded-lg p-4 mt-2 w-64">
               <label className="text-sm text-gray-600">From</label>
               <input
                 type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
                 className="border rounded-lg p-2 w-full mb-3"
               />
 
               <label className="text-sm text-gray-600">To</label>
               <input
                 type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
                 className="border rounded-lg p-2 w-full"
               />
 
