@@ -147,7 +147,7 @@ export default function SearchBar({ compact = false }) {
           </button>
 
           {showDatePicker === "menu" && (
-            <div className="absolute z-50 bg-white shadow-lg rounded-lg p-2 mt-2 w-48">
+            <div className="absolute top-full translate-y-2 z-50 bg-white shadow-lg rounded-lg p-2 w-48">
               <div
                 className="p-2 hover:bg-gray-100 cursor-pointer rounded"
                 onClick={() => {
@@ -200,7 +200,7 @@ export default function SearchBar({ compact = false }) {
           )}
 
           {showDatePicker === "custom" && (
-            <div className="absolute z-50 bg-white shadow-lg rounded-lg p-4 mt-2 w-64">
+            <div className="absolute top-full translate-y-2 z-50 bg-white shadow-lg rounded-lg p-4 w-64">
               <label className="text-sm text-gray-600">From</label>
               <input
                 type="date"
@@ -238,7 +238,7 @@ export default function SearchBar({ compact = false }) {
           />
 
           {suggestions.length > 0 && (
-            <div className="absolute top-full left-0 w-full bg-white shadow-lg rounded-lg mt-1 z-50">
+            <div className="absolute top-full translate-y-2 left-0 w-full bg-white shadow-lg rounded-lg z-50">
               {suggestions.map((item: any, index: number) => (
                 <div
                   key={index}
