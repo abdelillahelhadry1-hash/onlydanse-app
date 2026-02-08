@@ -27,8 +27,15 @@ export default function Header() {
           </Link>
         </nav>
 
-        {/* Auth actions */}
+        {/* Right side: Search + Auth actions */}
         <div className="flex items-center gap-4">
+          {/* Search button (will open modal later) */}
+          <button
+            className="hidden md:inline-flex px-4 py-2 rounded-full border text-sm text-gray-700 hover:bg-gray-100 transition"
+          >
+            Search
+          </button>
+
           <Link
             href="/login"
             className="text-sm font-medium text-gray-700 hover:text-black transition-colors"
