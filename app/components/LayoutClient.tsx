@@ -6,6 +6,7 @@ import Header from "@/app/components/Header";
 import SearchBar from "@/app/components/SearchBar";
 import CategoryNav from "@/app/components/CategoryNav";
 import Footer from "@/app/components/Footer";
+import SearchModal from "@/app/components/SearchModal"; // ← ADD THIS
 
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -14,6 +15,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
   return (
     <>
       <Header />
+      <SearchModal /> {/* ← ADD THIS */}
 
       {/* Animated SearchBar */}
       <div
