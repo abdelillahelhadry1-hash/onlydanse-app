@@ -29,8 +29,9 @@ export default function Header() {
 
         {/* Right side: Search + Auth actions */}
         <div className="flex items-center gap-4">
-          {/* Search button (will open modal later) */}
+          {/* Search button triggers modal */}
           <button
+            onClick={() => document.dispatchEvent(new Event("openSearchModal"))}
             className="hidden md:inline-flex px-4 py-2 rounded-full border text-sm text-gray-700 hover:bg-gray-100 transition"
           >
             Search
