@@ -108,9 +108,7 @@ export default function SearchBar({ compact = false }) {
 
   return (
     <div
-      className={`w-full border-b bg-white relative z-40 transition-all duration-300 ${
-        compact ? "scale-95 opacity-95" : "scale-100 opacity-100"
-      }`}
+      className="w-full border-b bg-white relative z-40 transition-all duration-300"
       ref={dropdownRef}
     >
       <div className="mx-auto max-w-7xl px-6 py-4 flex flex-col md:flex-row gap-3 items-center justify-center">
@@ -269,4 +267,3 @@ export default function SearchBar({ compact = false }) {
     </div>
   );
 }
-
