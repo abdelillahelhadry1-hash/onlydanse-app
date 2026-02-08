@@ -17,23 +17,20 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
       <Header />
       <SearchModal />
 
-      {/* Animated SearchBar */}
-      <div
-        className={`transition-all duration-300 ${
-          isHome
-            ? "mt-6 scale-100 opacity-100"
-            : "mt-6 scale-95 opacity-95"   // ← FIXED: increased margin for compact mode
-        }`}
-      >
-        <SearchBar compact={!isHome} />
+      {/* SearchBar stays at the top, clean and uncluttered */}
+      <div className={`transition-all duration-300 ${isHome ? "mt-6" : "mt-6"}`}>
+        <div className={isHome ? "scale-100 opacity-100" : "scale-95 opacity-95"}>
+          <SearchBar compact={!isHome} />
+        </div>
       </div>
 
-      {/* Sticky CategoryNav */}
-      <CategoryNav />
-
+      {/* Main content */}
       <main className="pt-10 px-4">
         {children}
       </main>
+
+      {/* CategoryNav moved BELOW content */}
+      <CategoryNav />
 
       <Footer />
     </>
