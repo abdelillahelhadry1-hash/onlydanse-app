@@ -53,7 +53,7 @@ export default function SearchBar({ compact = false }) {
     setTo(nextWeek.toISOString().split("T")[0]);
   }, []);
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -140,7 +140,7 @@ export default function SearchBar({ compact = false }) {
         </select>
 
         {/* Date Picker */}
-        <div className="relative w-full md:w-40">
+        <div className="relative w-full md:w-40 z-50">
           <button
             onClick={() => setShowDatePicker(showDatePicker === "menu" ? false : "menu")}
             className="border rounded-lg p-3 text-gray-700 w-full text-left bg-gray-50"
@@ -230,7 +230,7 @@ export default function SearchBar({ compact = false }) {
         </div>
 
         {/* City Autocomplete */}
-        <div className="relative w-full md:w-40">
+        <div className="relative w-full md:w-40 z-50">
           <input
             type="text"
             value={city}
@@ -269,3 +269,4 @@ export default function SearchBar({ compact = false }) {
     </div>
   );
 }
+
