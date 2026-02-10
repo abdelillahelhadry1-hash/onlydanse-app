@@ -33,6 +33,9 @@ export default async function EventDetailPage({
   const res = await fetch(url, { cache: "no-store" });
   const event = res.ok ? await res.json() : null;
 
+  // 🔥 Add this log to inspect the event object in Vercel logs
+  console.log("EVENT DATA:", event);
+
   if (!event) {
     return (
       <div className="max-w-3xl mx-auto py-10">
