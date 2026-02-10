@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabaseClient";
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;
 
@@ -33,3 +33,4 @@ export async function GET(
 
   return NextResponse.json(data);
 }
+
