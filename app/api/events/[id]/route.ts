@@ -3,9 +3,14 @@ import { supabase } from "@/lib/supabaseClient";
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = context.params;
+  // Your project expects params to be a Promise — so we unwrap it
+  const { id } = await context.params;
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing event ID" }, { status: 400 });
+  }
 
   const { data, error } = await supabase
     .from("events")
