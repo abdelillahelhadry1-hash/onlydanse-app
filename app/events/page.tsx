@@ -27,7 +27,6 @@ export default async function EventsPage({
   if (start) params.set("start", start);
   if (end) params.set("end", end);
 
-  // ✅ FIX: Use relative URL (works on Vercel, local, preview)
   const url = `/api/events?${params.toString()}`;
 
   let events: any[] = [];
@@ -37,8 +36,10 @@ export default async function EventsPage({
 
     if (res.ok) {
       const data = await res.json();
+
+      // ⭐ CRITICAL FIX: filter out events with missing IDs
       if (Array.isArray(data)) {
-        events = data;
+        events = data.filter((e) => e?.id);
       }
     } else {
       console.error("API returned non-OK status:", res.status);
