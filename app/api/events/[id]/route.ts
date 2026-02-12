@@ -1,13 +1,14 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  // ⭐ Next.js 16 requires awaiting params
+  const { id } = await context.params;
 
-  // ⭐ Prevent UUID errors
+  // ⭐ Prevent UUID crashes
   if (!id || id === "undefined" || id === "null") {
     return NextResponse.json(
       { error: "Invalid event ID" },
