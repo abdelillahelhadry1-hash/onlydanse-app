@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import DancerDashboard from "./dancer/DancerDashboard";
 
 export default function DashboardClient({
   user,
