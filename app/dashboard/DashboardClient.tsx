@@ -56,12 +56,8 @@ export default function DashboardClient({
         </div>
       )}
 
+      {/* For now, only dancer role is implemented */}
       {activeRole === "dancer" && <DancerDashboard />}
-      {activeRole === "instructor" && <InstructorDashboard />}
-      {activeRole === "studio" && <StudioDashboard />}
-      {activeRole === "organizer" && <OrganizerDashboard />}
     </div>
   );
 }
-
-/* ROLE-SPECIFIC DASHBOARDS BELOW… */
