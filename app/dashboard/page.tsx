@@ -19,8 +19,9 @@ export default function DashboardPage() {
     async function loadDashboard() {
       const { data: { user } } = await supabase.auth.getUser();
 
+      // If no user → redirect to login
       if (!user) {
-        router.push("/");
+        router.push("/auth");
         return;
       }
 
@@ -30,6 +31,7 @@ export default function DashboardPage() {
         .select("role")
         .eq("user_id", user.id);
 
+      // If user has no roles → send to onboarding
       if (!userRoles || userRoles.length === 0) {
         router.push("/onboarding/step3-roles");
         return;
