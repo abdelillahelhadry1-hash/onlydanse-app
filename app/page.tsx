@@ -32,7 +32,7 @@ export default async function HomePage() {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // ⭐ If logged in → redirect to dashboard
+  // Redirect logged-in users to dashboard
   if (session) {
     redirect("/dashboard");
   }
