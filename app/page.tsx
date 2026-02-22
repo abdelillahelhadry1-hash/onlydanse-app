@@ -32,8 +32,17 @@ export default async function HomePage() {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // Redirect logged-in users to dashboard
+  // Redirect logged-in users based on roles
   if (session) {
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", session.user.id);
+
+    if (!roles || roles.length === 0) {
+      redirect("/onboarding/step3-roles");
+    }
+
     redirect("/dashboard");
   }
 
