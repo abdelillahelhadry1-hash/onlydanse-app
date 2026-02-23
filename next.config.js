@@ -13,10 +13,6 @@ const nextConfig = {
         hostname: "onlydanse.com"
       }
     ]
-  },
-
-  experimental: {
-    serverActions: true
   }
 };
 
