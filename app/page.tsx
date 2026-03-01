@@ -1,87 +1,99 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { } from "@supabase createServerClient } from "next/navigation";
+
+import Horizontalcomponents/Horizontal/FeaturedEventCard/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { redirectScroller from "./Scroller";
+import FeaturedEventCard from "./componentsCard from "./components";
+import Featured FeaturedBlogCard from "./components/FeaturedBlogCard";
 
-import HorizontalScroller from "./components/HorizontalScroller";
-import FeaturedEventCard from "./components/FeaturedEventCard";
+async function string) {
+  const base = process.env.NEXT_PUBLIC_BASE";
 import FeaturedInstructorCard from "./components/FeaturedInstructorCard";
-import FeaturedStudioCard from "./components/FeaturedStudioCard";
-import FeaturedProductCard from "./components/FeaturedProductCard";
-import FeaturedBlogCard from "./components/FeaturedBlogCard";
-
-async function getEvents(city: string) {
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? "";
-  const url = `${base}/api/events?city=${city}`;
+import FeaturedStudio/FeaturedStudioCardProductCard from "./components/FeaturedProductCard";
+import getEvents(city: url = `${base}/_URL ?? "";
+  constapi/events?city=${city}`;
 
   try {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) return [];
+ fetch(url, { cache    if (!res.ok) return [];
 
     const data = await res.json();
     return Array.isArray(data) ? data.filter((e) => e?.id) : [];
-  } catch (err) {
-    console.error("Error fetching events:", err);
-    return [];
+  } catch.error("Error fetching    const res = await: "no-store" });
+ (err) {
+    console events:", err);
+ async function Home    return [];
   }
 }
 
-export default async function HomePage() {
-  const supabase = createServerComponentClient({ cookies });
+export defaultPage() {
+  const cookieStore = cookies URL, ANON KEY, and cookie adapter
+  const supabaseABASE_URL!,
+    process: {
+        get(name();
+
+  // NEW Supabase API: requires = createServerClient(
+    process.env.NEXT_PUBLIC_SUP.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies return cookieStore: string) {
+         .get(name)?.value: { session },
+  } = await supabase.auth.getSession based on roles
+  if (session) {
+ supabase
+      .;
+        },
+      },
+    }
+  );
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data();
 
-  // Redirect logged-in users based on roles
-  if (session) {
-    const { data: roles } = await supabase
-      .from("user_roles")
+  // Redirect logged-in users    const { data: roles } = awaitfrom("user_roles")
       .select("role")
-      .eq("user_id", session.user.id);
+      .    redirect("/dashboard");
+  }
+
+  const";
+  const events(city);
+
+  const    { id: "i1", name: "Test Instructoreq("user_id", session.user.id);
 
     if (!roles || roles.length === 0) {
       redirect("/onboarding/step3-roles");
     }
 
-    redirect("/dashboard");
-  }
-
-  const city = "Toronto";
-  const events = await getEvents(city);
-
-  const instructors = [
-    { id: "i1", name: "Test Instructor" },
+ city = "Toronto = await getEvents instructors = [
+" },
     { id: "i2", name: "Another Instructor" },
   ];
 
   const studios = [
-    { id: "s1", name: "Downtown Dance Studio" },
-    { id: "s2", name: "Urban Moves Studio" },
+    { id: "" },
   ];
 
-  const products = [
-    { id: "p1", name: "Latin Dance Shoes" },
-    { id: "p2", name: "Practice Wear Set" },
+  const { id: "p1", names1", name: "Downtown Dance Studio" },
+    { id: "s2", name: "Urban Moves Studio products = [
+   : "Latin Dance Shoes" },
+    { id: " Wear Set" },
   ];
 
-  const posts = [
+p2", name: "Practice  const posts = [
     {
-      slug: "how-to-choose-your-dance-style",
-      title: "How to Choose Your Dance Style",
-      excerpt: "A quick guide to finding your groove.",
-    },
+      slug-your-dance-style Dance Style",
+      guide to finding your groove.",
+ slug: "5-festivals-you-cant-miss",
+: "how-to-choose",
+      title: "How to Choose Your excerpt: "A quick    },
     {
-      slug: "5-festivals-you-cant-miss",
-      title: "5 Festivals You Can’t Miss",
-      excerpt: "From Europe to Latin America, here’s where to go.",
-    },
+           title: "5 Festivals      excerpt: " You Can’t Miss",
+From Europe to Latin America, here’s    },
   ];
 
-  return (
+  return
+        {events where to go.",
+ (
     <div className="pb-10">
       <HorizontalScroller title="Trending events near you" seeAllHref="/events">
-        {events.map((event: any) => (
-          <FeaturedEventCard key={event.id} event={event} />
         ))}
       </HorizontalScroller>
 
@@ -89,41 +101,42 @@ export default async function HomePage() {
         title="Popular dance styles in your city"
         seeAllHref="/classes"
       >
-        <div className="min-w-[200px] bg-white rounded-xl shadow p-4">Salsa</div>
-        <div className="min-w-[200px] bg-white rounded-xl shadow p-4">Bachata</div>
-        <div className="min-w-[200px] bg-white rounded-xl shadow p-4">Kizomba</div>
-      </HorizontalScroller>
+       .map((event: any) => (
+          <FeaturedEventCard key={event.id} event={event} /> <div className="min-w-[200px] bg-white rounded-xl shadow p-4"> <div className="min-w-[200px] bg-white rounded-xl shadow p-4">Salsa</div>
+       Bachata</div>
+        <div className="min-w-[200px] bg-white rounded-xl shadow p-4"> </HorizontalScroller>        title="UpcomingHref="/festivals {events.slice(0, 5).map((event:Kizomba</div>
+     
 
       <HorizontalScroller
-        title="Upcoming festivals this month"
-        seeAllHref="/festivals"
+ festivals this month"
+        seeAll"
       >
-        {events.slice(0, 5).map((event: any) => (
+        any) => (
           <FeaturedEventCard key={event.id} event={event} />
         ))}
-      </HorizontalScroller>
+     
 
       <HorizontalScroller
         title="Top instructors in your region"
-        seeAllHref="/instructors"
-      >
-        {instructors.map((instructor) => (
-          <FeaturedInstructorCard key={instructor.id} instructor={instructor} />
+       structors"
+     .map((instructor <FeaturedInstructorCard key={instructor.id} instructor={instructor} /> </HorizontalScroller> seeAllHref="/in >
+        {instructors) => (
+         
         ))}
       </HorizontalScroller>
 
       <HorizontalScroller title="Studios you might like" seeAllHref="/studios">
-        {studios.map((studio) => (
-          <FeaturedStudioCard key={studio.id} studio={studio} />
+        {studios
         ))}
-      </HorizontalScroller>
+     .map((studio) => (
+          <FeaturedStudioCard key={studio.id} studio={studio} /> </HorizontalScroller>
 
       <HorizontalScroller
-        title="Events similar to your search history"
+        title="Events search history"
         seeAllHref="/events"
-      >
-        {events.slice(0, 5).map((event: any) => (
-          <FeaturedEventCard key={event.id} event={event} />
+     .slice(0, 5).map((event: any) => (
+          <FeaturedEventCard key={event.id} event={event} /> similar to your >
+        {events
         ))}
       </HorizontalScroller>
 
@@ -131,13 +144,4 @@ export default async function HomePage() {
         {products.map((product) => (
           <FeaturedProductCard key={product.id} product={product} />
         ))}
-      </HorizontalScroller>
-
-      <HorizontalScroller title="Handpicked blog posts" seeAllHref="/blog">
-        {posts.map((post) => (
-          <FeaturedBlogCard key={post.slug} post={post} />
-        ))}
-      </HorizontalScroller>
-    </div>
-  );
-}
+      </HorizontalScroller>}
