@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabaseClient";
+import { createSupabaseClient } from "@/lib/supabaseClient";
 
 export async function GET(req: Request) {
+  const supabase = createSupabaseClient();
+
   const { searchParams } = new URL(req.url);
 
   // Incoming filters
@@ -92,7 +94,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // ⭐ CRITICAL FIX: Remove events with missing or undefined IDs
+  // Remove events with missing or undefined IDs
   const safe = (data ?? []).filter((e) => e?.id);
 
   return NextResponse.json(safe);
