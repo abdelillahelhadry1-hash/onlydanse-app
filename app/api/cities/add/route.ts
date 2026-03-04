@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { createSupabaseClient } from "@/lib/supabaseClient";
 import { formatCity } from "@/lib/formatCity";
 
