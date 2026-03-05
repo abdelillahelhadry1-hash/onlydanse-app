@@ -1,4 +1,5 @@
-// app/events/page.tsx
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 import EventCard from "../components/EventCard";
 
@@ -37,7 +38,6 @@ export default async function EventsPage({
     if (res.ok) {
       const data = await res.json();
 
-      // ⭐ CRITICAL FIX: filter out events with missing IDs
       if (Array.isArray(data)) {
         events = data.filter((e) => e?.id);
       }
