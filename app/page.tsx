@@ -1,8 +1,8 @@
 export const dynamic = "force-dynamic";
 
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { createServerClient } from "@supabase/auth-helpers-nextjs";
 
 import HorizontalScroller from "./components/HorizontalScroller";
 import FeaturedEventCard from "./components/FeaturedEventCard";
@@ -28,12 +28,25 @@ async function getEvents(city: string) {
 }
 
 export default async function HomePage() {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = cookies();
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
 
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
+  // If logged in, check roles
   if (session) {
     const { data: roles } = await supabase
       .from("user_roles")
@@ -47,6 +60,7 @@ export default async function HomePage() {
     redirect("/dashboard");
   }
 
+  // Public homepage content
   const city = "Toronto";
   const events = await getEvents(city);
 
