@@ -1,29 +1,32 @@
 export const dynamic = "force-dynamic";
 
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { createServerClient } from "@supabase/auth-helpers-nextjs";
 import DashboardWrapper from "./DashboardWrapper";
 
 export default async function DashboardPage() {
-  const supabase = createServerComponentClient({ cookies });
+  const cookieStore = cookies();
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
-    redirect("/auth");
+  if (!user) {
+    redirect("/login");
   }
 
-  const user = session.user;
-
-  const { data: userRoles } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", user.id);
-
-  const roles = userRoles?.map((r) => r.role) ?? [];
-
-  return <DashboardWrapper user={user} roles={roles} />;
+  return <DashboardWrapper user={user} />;
 }
