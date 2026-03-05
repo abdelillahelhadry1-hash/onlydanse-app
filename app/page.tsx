@@ -1,4 +1,6 @@
-import { createServerClient } from "@supabase/auth-helpers-nextjs";
+export const dynamic = "force-dynamic";
+
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -26,19 +28,7 @@ async function getEvents(city: string) {
 }
 
 export default async function HomePage() {
-  const cookieStore = cookies();
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-      },
-    }
-  );
+  const supabase = createServerComponentClient({ cookies });
 
   const {
     data: { session },
