@@ -15,11 +15,13 @@ export default function Step2Settings() {
   const [language, setLanguage] = useState(
     typeof navigator !== "undefined" ? navigator.language : "en"
   );
+
   const [timezone, setTimezone] = useState(
     typeof Intl !== "undefined"
       ? Intl.DateTimeFormat().resolvedOptions().timeZone
       : "UTC"
   );
+
   const [currency, setCurrency] = useState("EUR");
 
   async function saveSettings() {
