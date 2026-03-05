@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 import { createSupabaseClient } from "@/lib/supabaseClient";
 import { formatCity } from "@/lib/formatCity";
@@ -12,19 +14,13 @@ export async function GET(req: Request) {
     return NextResponse.json({ predictions: [] });
   }
 
-  // 1️⃣ SEARCH DATABASE FIRST
-  const { data: dbCities, error: dbError } = await supabase
+  const { data: dbCities } = await supabase
     .from("cities")
     .select("*")
     .ilike("formatted_name", `%${input}%`)
     .limit(5);
 
-  if (dbError) {
-    console.error("DB error:", dbError);
-  }
-
-  // If DB has results → return them immediately
-  if (dbCities && dbCities.length > 0) {
+  if (dbCities?.length) {
     return NextResponse.json({
       predictions: dbCities.map((c) => ({
         description: c.formatted_name,
@@ -38,9 +34,7 @@ export async function GET(req: Request) {
     });
   }
 
-  // 2️⃣ GOOGLE PLACES FALLBACK
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
-
   if (!apiKey) {
     return NextResponse.json(
       { error: "Missing Google Maps API key" },
@@ -55,13 +49,12 @@ export async function GET(req: Request) {
   const googleRes = await fetch(url);
   const googleData = await googleRes.json();
 
-  if (!googleData.predictions || googleData.predictions.length === 0) {
+  if (!googleData.predictions?.length) {
     return NextResponse.json({ predictions: [] });
   }
 
   const first = googleData.predictions[0];
 
-  // 3️⃣ GET PLACE DETAILS (lat/lng + structured info)
   const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${first.place_id}&key=${apiKey}`;
   const detailsRes = await fetch(detailsUrl);
   const detailsData = await detailsRes.json();
@@ -85,35 +78,23 @@ export async function GET(req: Request) {
   const lat = detailsData.result.geometry.location.lat;
   const lng = detailsData.result.geometry.location.lng;
 
-  // 4️⃣ APPLY USA RULE
   let city_name = city;
   if (country === "United States" && state_code) {
     city_name = `${city}, ${state_code}`;
   }
 
-  // 5️⃣ FORMAT NAME
   const formatted_name = formatCity(city, state_code, country);
 
-  // 6️⃣ INSERT INTO DATABASE
-  const { data: inserted, error: insertError } = await supabase
-    .from("cities")
-    .insert({
-      city_name: city_name.toLowerCase(),
-      state_code: state_code || null,
-      country_name: country.toLowerCase(),
-      formatted_name,
-      google_place_id: first.place_id,
-      lat,
-      lng,
-    })
-    .select()
-    .single();
+  await supabase.from("cities").insert({
+    city_name: city_name.toLowerCase(),
+    state_code: state_code || null,
+    country_name: country.toLowerCase(),
+    formatted_name,
+    google_place_id: first.place_id,
+    lat,
+    lng,
+  });
 
-  if (insertError) {
-    console.error("Insert error:", insertError);
-  }
-
-  // 7️⃣ RETURN THE NEW CITY
   return NextResponse.json({
     predictions: [
       {
