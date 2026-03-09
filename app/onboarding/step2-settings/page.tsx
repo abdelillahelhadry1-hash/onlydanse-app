@@ -26,7 +26,10 @@ export default function Step2Settings() {
 
   async function saveSettings() {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) {
+      router.push("/auth");
+      return;
+    }
 
     await supabase
       .from("profiles")
