@@ -13,13 +13,18 @@ export async function GET(request: Request) {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
+        set(name: string, value: string, options: any) {
+          cookieStore.set({ name, value, ...options });
+        },
+        remove(name: string, options: any) {
+          cookieStore.set({ name, value: "", ...options });
+        },
       },
     }
   );
 
-  // Refresh session
+  // IMPORTANT: This exchanges the OAuth code AND sets the session cookie
   await supabase.auth.getUser();
 
-  // Redirect to dashboard
   return NextResponse.redirect(new URL("/dashboard", request.url));
 }
