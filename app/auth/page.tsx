@@ -111,7 +111,7 @@ export default function AuthPage() {
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
         <button
-          type="submit"
+          type="submit" // ⭐ IMPORTANT
           className="w-full p-3 bg-black text-white rounded"
         >
           {mode === "login" ? "Log in" : "Sign up"}
