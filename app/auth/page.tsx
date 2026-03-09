@@ -26,7 +26,8 @@ export default function AuthPage() {
     });
   }
 
-  async function handleEmailAuth() {
+  async function handleEmailAuth(e: React.FormEvent) {
+    e.preventDefault(); // ⭐ CRITICAL FIX
     setError("");
 
     if (mode === "login") {
@@ -37,7 +38,7 @@ export default function AuthPage() {
 
       if (error) return setError(error.message);
 
-      // IMPORTANT: redirect email login to callback too
+      // Redirect to callback so Supabase can set the session cookie
       router.push("/auth/callback");
       return;
     }
@@ -89,7 +90,8 @@ export default function AuthPage() {
 
       <div className="text-center text-gray-500 my-4">or</div>
 
-      <div className="space-y-4">
+      {/* ⭐ Wrap inputs + button in a form so preventDefault works */}
+      <form onSubmit={handleEmailAuth} className="space-y-4">
         <input
           type="email"
           placeholder="Email"
@@ -109,12 +111,12 @@ export default function AuthPage() {
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
         <button
-          onClick={handleEmailAuth}
+          type="submit"
           className="w-full p-3 bg-black text-white rounded"
         >
           {mode === "login" ? "Log in" : "Sign up"}
         </button>
-      </div>
+      </form>
 
       <div className="text-center mt-6">
         {mode === "login" ? (
