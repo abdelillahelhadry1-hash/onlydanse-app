@@ -16,6 +16,26 @@ export default async function DashboardPage() {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
+        set(name: string, value: string, options: any) {
+          cookieStore.set({
+            name,
+            value,
+            ...options,
+            path: "/",          // ⭐ REQUIRED
+            sameSite: "lax",    // ⭐ REQUIRED
+            secure: true,       // ⭐ REQUIRED on HTTPS
+          });
+        },
+        remove(name: string, options: any) {
+          cookieStore.set({
+            name,
+            value: "",
+            ...options,
+            path: "/",
+            sameSite: "lax",
+            secure: true,
+          });
+        },
       },
     }
   );
@@ -24,7 +44,7 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // FIXED: redirect to /auth instead of /login
+  // If no user, redirect to /auth
   if (!user) {
     redirect("/auth");
   }
