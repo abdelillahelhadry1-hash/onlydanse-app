@@ -24,8 +24,9 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // FIXED: redirect to /auth instead of /login
   if (!user) {
-    redirect("/login");
+    redirect("/auth");
   }
 
   // Fetch user roles
