@@ -23,9 +23,8 @@ export async function GET(request: Request) {
     }
   );
 
-  // This forces Supabase to exchange the code and set the session cookie
-  await supabase.auth.getUser();
+  // THIS is the missing piece
+  await supabase.auth.exchangeCodeForSession(request.url);
 
   return NextResponse.redirect(new URL("/dashboard", request.url));
 }
-
