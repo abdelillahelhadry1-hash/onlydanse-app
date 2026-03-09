@@ -39,7 +39,10 @@ export default function Step1City() {
 
   async function selectCity(city: City) {
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (!user) {
+      router.push("/auth");
+      return;
+    }
 
     await supabase
       .from("profiles")
