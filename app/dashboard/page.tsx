@@ -44,12 +44,10 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // If no user, redirect to /auth
   if (!user) {
     redirect("/auth");
   }
 
-  // Fetch user roles
   const { data: rolesData } = await supabase
     .from("user_roles")
     .select("role")
