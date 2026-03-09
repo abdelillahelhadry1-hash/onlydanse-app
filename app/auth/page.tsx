@@ -21,7 +21,8 @@ export default function AuthPage() {
     await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        // IMPORTANT: redirect to callback, NOT dashboard
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
   }
@@ -37,6 +38,7 @@ export default function AuthPage() {
 
       if (error) return setError(error.message);
 
+      // Email/password login does NOT need redirectTo
       router.push("/dashboard");
       return;
     }
