@@ -23,8 +23,9 @@ export async function GET(request: Request) {
     }
   );
 
-  // IMPORTANT: This exchanges the OAuth code AND sets the session cookie
+  // This forces Supabase to exchange the code and set the session cookie
   await supabase.auth.getUser();
 
   return NextResponse.redirect(new URL("/dashboard", request.url));
 }
+
