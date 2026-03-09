@@ -14,16 +14,29 @@ export async function GET(request: Request) {
           return cookieStore.get(name)?.value;
         },
         set(name: string, value: string, options: any) {
-          cookieStore.set({ name, value, ...options });
+          cookieStore.set({
+            name,
+            value,
+            ...options,
+            path: "/",          // ⭐ REQUIRED
+            sameSite: "lax",    // ⭐ REQUIRED
+            secure: true,       // ⭐ REQUIRED on HTTPS
+          });
         },
         remove(name: string, options: any) {
-          cookieStore.set({ name, value: "", ...options });
+          cookieStore.set({
+            name,
+            value: "",
+            ...options,
+            path: "/",
+            sameSite: "lax",
+            secure: true,
+          });
         },
       },
     }
   );
 
-  // THIS is the missing piece
   await supabase.auth.exchangeCodeForSession(request.url);
 
   return NextResponse.redirect(new URL("/dashboard", request.url));
