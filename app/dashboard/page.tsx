@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic";
+export const revalidate = 0; // ⭐ REQUIRED to prevent caching
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -21,9 +22,9 @@ export default async function DashboardPage() {
             name,
             value,
             ...options,
-            path: "/",          // ⭐ REQUIRED
-            sameSite: "lax",    // ⭐ REQUIRED
-            secure: true,       // ⭐ REQUIRED on HTTPS
+            path: "/",
+            sameSite: "lax",
+            secure: true,
           });
         },
         remove(name: string, options: any) {
