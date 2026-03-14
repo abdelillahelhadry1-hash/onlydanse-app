@@ -1,10 +1,10 @@
 export const dynamic = "force-dynamic";
 
-import { createSupabaseClient } from "@/lib/supabaseClient";
+import { supabaseServerClient } from "@/lib/supabaseServer";
 import { formatCity } from "@/lib/formatCity";
 
 export async function POST(req: Request) {
-  const supabase = createSupabaseClient();
+  const supabase = supabaseServerClient();
 
   const body = await req.json();
   const { city, state, country, lat, lng, google_place_id } = body;
