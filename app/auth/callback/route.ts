@@ -18,9 +18,10 @@ export async function GET(request: Request) {
             name,
             value,
             ...options,
-            path: "/",          // ⭐ REQUIRED
-            sameSite: "lax",    // ⭐ REQUIRED
-            secure: true,       // ⭐ REQUIRED on HTTPS
+            path: "/",          
+            sameSite: "lax",    
+            secure: true,       
+            domain: ".onlydanse.com",   // ⭐ REQUIRED
           });
         },
         remove(name: string, options: any) {
@@ -31,6 +32,7 @@ export async function GET(request: Request) {
             path: "/",
             sameSite: "lax",
             secure: true,
+            domain: ".onlydanse.com",   // ⭐ REQUIRED
           });
         },
       },
