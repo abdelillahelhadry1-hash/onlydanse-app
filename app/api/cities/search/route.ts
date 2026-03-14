@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { createSupabaseClient } from "@/lib/supabaseClient";
+import { supabaseServerClient } from "@/lib/supabaseServer";
 import { normalizeCity } from "@/lib/normalizeCity";
 import { aliasMap } from "@/lib/aliasMap";
 import { fuzzyMatch } from "@/lib/fuzzyMatch";
@@ -8,7 +8,7 @@ import { getGooglePlace } from "@/lib/googlePlaces";
 import { formatCity } from "@/lib/formatCity";
 
 export async function GET(req: Request) {
-  const supabase = createSupabaseClient();
+  const supabase = supabaseServerClient();
 
   const { searchParams } = new URL(req.url);
   const raw = searchParams.get("q") || "";
@@ -18,6 +18,7 @@ export async function GET(req: Request) {
 
   const english = aliasMap[normalized] || normalized;
 
+  // 1. Direct match
   let { data: cities } = await supabase
     .from("cities")
     .select("*")
@@ -25,15 +26,18 @@ export async function GET(req: Request) {
 
   if (cities?.length) return Response.json(cities);
 
+  // 2. Fuzzy match
   let { data: allCities } = await supabase.from("cities").select("*");
   const fuzzy = allCities?.find((c) => fuzzyMatch(c.city_name, english));
   if (fuzzy) return Response.json([fuzzy]);
 
+  // 3. Google Places fallback
   const place = await getGooglePlace(english);
   if (!place?.city || !place?.country) return Response.json([]);
 
   const formatted = formatCity(place.city, place.state, place.country);
 
+  // 4. Check if already exists by Google Place ID
   const { data: existing } = await supabase
     .from("cities")
     .select("*")
@@ -42,6 +46,7 @@ export async function GET(req: Request) {
 
   if (existing) return Response.json([existing]);
 
+  // 5. Insert new city
   const { data: inserted } = await supabase
     .from("cities")
     .insert({
