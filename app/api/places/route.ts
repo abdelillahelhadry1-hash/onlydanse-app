@@ -1,11 +1,11 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { createSupabaseClient } from "@/lib/supabaseClient";
+import { supabaseServerClient } from "@/lib/supabaseServer";
 import { formatCity } from "@/lib/formatCity";
 
 export async function GET(req: Request) {
-  const supabase = createSupabaseClient();
+  const supabase = supabaseServerClient();
 
   const { searchParams } = new URL(req.url);
   const input = searchParams.get("input");
@@ -14,6 +14,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ predictions: [] });
   }
 
+  // 1. Try local DB first
   const { data: dbCities } = await supabase
     .from("cities")
     .select("*")
@@ -34,6 +35,7 @@ export async function GET(req: Request) {
     });
   }
 
+  // 2. Google Places fallback
   const apiKey = process.env.GOOGLE_MAPS_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
@@ -55,6 +57,7 @@ export async function GET(req: Request) {
 
   const first = googleData.predictions[0];
 
+  // 3. Fetch place details
   const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${first.place_id}&key=${apiKey}`;
   const detailsRes = await fetch(detailsUrl);
   const detailsData = await detailsRes.json();
@@ -85,6 +88,7 @@ export async function GET(req: Request) {
 
   const formatted_name = formatCity(city, state_code, country);
 
+  // 4. Insert into DB
   await supabase.from("cities").insert({
     city_name: city_name.toLowerCase(),
     state_code: state_code || null,
