@@ -1,10 +1,10 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { createSupabaseClient } from "@/lib/supabaseClient";
+import { supabaseServerClient } from "@/lib/supabaseServer";
 
 export async function GET(req: Request) {
-  const supabase = createSupabaseClient();
+  const supabase = supabaseServerClient();
 
   const { searchParams } = new URL(req.url);
 
@@ -17,6 +17,7 @@ export async function GET(req: Request) {
 
   const cityName = rawCityName?.trim().toLowerCase() || null;
 
+  // Resolve city_id from city name if needed
   if (!city_id && cityName) {
     const { data: cityData } = await supabase
       .from("cities")
@@ -28,6 +29,7 @@ export async function GET(req: Request) {
     city_id = cityData[0].id;
   }
 
+  // Base query
   let query = supabase
     .from("events")
     .select(`
@@ -41,11 +43,13 @@ export async function GET(req: Request) {
     `)
     .order("start_time", { ascending: true });
 
+  // Filters
   if (city_id) query = query.eq("city_id", city_id);
   if (event_type_id) query = query.eq("event_type_id", event_type_id);
   if (from) query = query.gte("start_time", from);
   if (to) query = query.lte("start_time", to);
 
+  // Style filter (requires join table)
   if (style_id) {
     const { data: styleLinks } = await supabase
       .from("event_styles")
@@ -60,6 +64,7 @@ export async function GET(req: Request) {
 
   const { data } = await query;
 
+  // Remove null/invalid rows
   const safe = (data ?? []).filter((e) => e?.id);
 
   return NextResponse.json(safe);
