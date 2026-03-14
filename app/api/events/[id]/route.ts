@@ -1,13 +1,13 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { createSupabaseClient } from "@/lib/supabaseClient";
+import { supabaseServerClient } from "@/lib/supabaseServer";
 
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  const supabase = createSupabaseClient();
+  const supabase = supabaseServerClient();
   const { id } = await context.params;
 
   if (!id || id === "undefined" || id === "null") {
