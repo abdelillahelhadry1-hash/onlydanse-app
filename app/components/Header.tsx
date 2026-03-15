@@ -3,9 +3,15 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+// Define a proper type for roles
+type UserRole = {
+  role: string;
+  is_primary: boolean;
+};
+
 export default function Header() {
-  const [roles, setRoles] = useState([]);
-  const [primaryRole, setPrimaryRole] = useState(null);
+  const [roles, setRoles] = useState<UserRole[]>([]);
+  const [primaryRole, setPrimaryRole] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
@@ -19,7 +25,9 @@ export default function Header() {
         setRoles(data.roles);
         setLoggedIn(true);
 
-        const primary = data.roles.find((r) => r.is_primary) ?? data.roles[0];
+        const primary =
+          data.roles.find((r: UserRole) => r.is_primary) ?? data.roles[0];
+
         setPrimaryRole(primary.role);
       }
     }
@@ -27,7 +35,7 @@ export default function Header() {
     loadRoles();
   }, []);
 
-  async function switchRole(role) {
+  async function switchRole(role: string) {
     await fetch("/api/switch-role", {
       method: "POST",
       body: JSON.stringify({ role }),
@@ -94,7 +102,7 @@ export default function Header() {
 
               {open && (
                 <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md border z-50">
-                  {roles.map((r) => (
+                  {roles.map((r: UserRole) => (
                     <button
                       key={r.role}
                       onClick={() => switchRole(r.role)}
