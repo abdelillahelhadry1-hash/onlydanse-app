@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
-  const cookieStore = cookies();
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,10 +11,10 @@ export async function middleware(req: NextRequest) {
     {
       cookies: {
         get(name) {
-          return cookieStore.get(name)?.value;
+          return req.cookies.get(name)?.value;
         },
         set(name, value, options) {
-          cookieStore.set({
+          res.cookies.set({
             name,
             value,
             ...options,
@@ -27,7 +25,7 @@ export async function middleware(req: NextRequest) {
           });
         },
         remove(name, options) {
-          cookieStore.set({
+          res.cookies.set({
             name,
             value: "",
             ...options,
@@ -41,7 +39,9 @@ export async function middleware(req: NextRequest) {
     }
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   const pathname = req.nextUrl.pathname;
 
