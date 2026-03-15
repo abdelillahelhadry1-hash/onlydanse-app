@@ -15,10 +15,26 @@ export async function GET(_req: NextRequest) {
           return cookieStore.get(name)?.value;
         },
         set(name, value, options) {
-          cookieStore.set({ name, value, ...options });
+          cookieStore.set({
+            name,
+            value,
+            ...options,
+            path: "/",
+            sameSite: "lax",
+            secure: true,
+            domain: ".onlydanse.com",
+          });
         },
         remove(name, options) {
-          cookieStore.set({ name, value: "", ...options });
+          cookieStore.set({
+            name,
+            value: "",
+            ...options,
+            path: "/",
+            sameSite: "lax",
+            secure: true,
+            domain: ".onlydanse.com",
+          });
         },
       },
     }
