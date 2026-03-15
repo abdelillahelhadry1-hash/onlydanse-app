@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
-export async function middleware(req) {
+export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const cookieStore = cookies();
 
@@ -47,17 +48,14 @@ export async function middleware(req) {
   const isAuthPage = pathname.startsWith("/auth");
   const isProtected = pathname.startsWith("/dashboard");
 
-  // 1. Not logged in → block protected pages
   if (!session && isProtected) {
     return NextResponse.redirect(new URL("/auth", req.url));
   }
 
-  // 2. Logged in → block auth pages
   if (session && isAuthPage) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
-  // 3. Homepage is always allowed
   return res;
 }
 
