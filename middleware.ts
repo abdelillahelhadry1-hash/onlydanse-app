@@ -21,7 +21,6 @@ export async function middleware(req: NextRequest) {
             path: "/",
             sameSite: "lax",
             secure: true,
-            domain: ".onlydanse.com",
           });
         },
         remove(name, options) {
@@ -32,7 +31,6 @@ export async function middleware(req: NextRequest) {
             path: "/",
             sameSite: "lax",
             secure: true,
-            domain: ".onlydanse.com",
           });
         },
       },
@@ -62,3 +60,4 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: ["/", "/dashboard/:path*", "/auth/:path*"],
 };
+
