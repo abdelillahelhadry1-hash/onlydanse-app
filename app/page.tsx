@@ -46,7 +46,7 @@ export default async function HomePage() {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // If logged in, check roles
+  // If logged in but missing roles → onboarding
   if (session) {
     const { data: roles } = await supabase
       .from("user_roles")
@@ -56,8 +56,6 @@ export default async function HomePage() {
     if (!roles || roles.length === 0) {
       redirect("/onboarding/step3-roles");
     }
-
-    redirect("/dashboard");
   }
 
   // Public homepage content
