@@ -22,7 +22,6 @@ export async function GET(_req: NextRequest) {
             path: "/",
             sameSite: "lax",
             secure: true,
-            domain: ".onlydanse.com",
           });
         },
         remove(name, options) {
@@ -33,7 +32,6 @@ export async function GET(_req: NextRequest) {
             path: "/",
             sameSite: "lax",
             secure: true,
-            domain: ".onlydanse.com",
           });
         },
       },
