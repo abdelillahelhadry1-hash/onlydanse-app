@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
-export async function POST(req) {
+export async function POST(req: NextRequest) {
   const { role } = await req.json();
   const cookieStore = cookies();
 
