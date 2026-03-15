@@ -14,6 +14,12 @@ export async function GET(_req: NextRequest) {
         get(name) {
           return cookieStore.get(name)?.value;
         },
+        set(name, value, options) {
+          cookieStore.set({ name, value, ...options });
+        },
+        remove(name, options) {
+          cookieStore.set({ name, value: "", ...options });
+        },
       },
     }
   );
