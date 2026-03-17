@@ -18,7 +18,10 @@ export default function Header() {
   // Fetch roles from API
   useEffect(() => {
     async function loadRoles() {
-      const res = await fetch("/api/get-roles");
+      const res = await fetch("/api/get-roles", {
+        credentials: "include", // ⭐ IMPORTANT FIX
+      });
+
       const data = await res.json();
 
       if (data.roles && data.roles.length > 0) {
@@ -39,6 +42,7 @@ export default function Header() {
     await fetch("/api/switch-role", {
       method: "POST",
       body: JSON.stringify({ role }),
+      credentials: "include", // ⭐ Also needed here
     });
 
     window.location.reload();
