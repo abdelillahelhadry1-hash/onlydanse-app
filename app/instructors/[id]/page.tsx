@@ -1,4 +1,10 @@
-export default function InstructorPage({ params }) {
+type InstructorPageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export default function InstructorPage({ params }: InstructorPageProps) {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <h1 className="text-2xl font-semibold mb-4">
