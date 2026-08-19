@@ -3,6 +3,12 @@
 import { useState } from "react";
 import type { User } from "@supabase/supabase-js";
 
+// Import dashboards for each role
+import DancerDashboard from "./dancer/DancerDashboard";
+import InstructorDashboard from "./instructor/page";
+import StudioDashboard from "./studio/page";
+import OrganizerDashboard from "./organizer/page";
+
 type DashboardWrapperProps = {
   user: User;
   roles: { role: string; is_primary: boolean }[];
@@ -40,10 +46,10 @@ export default function DashboardWrapper({ user, roles, children }: DashboardWra
       </header>
 
       <main>
-        {activeRole === "dancer" && <div>Dancer dashboard layout</div>}
-        {activeRole === "instructor" && <div>Instructor dashboard layout</div>}
-        {activeRole === "studio" && <div>Studio dashboard layout</div>}
-        {activeRole === "organizer" && <div>Organizer dashboard layout</div>}
+        {activeRole === "dancer" && <DancerDashboard />}
+        {activeRole === "instructor" && <InstructorDashboard />}
+        {activeRole === "studio" && <StudioDashboard />}
+        {activeRole === "organizer" && <OrganizerDashboard />}
 
         {children}
       </main>
