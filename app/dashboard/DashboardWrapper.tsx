@@ -1,64 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createServerClient } from "@supabase/auth-helpers-nextjs";
+import { useState } from "react";
+import type { User } from "@supabase/supabase-js";
 
-export default function DashboardWrapper({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<any>(null);
+type DashboardWrapperProps = {
+  user: User;
+  roles: { role: string; is_primary: boolean }[];
+  children?: React.ReactNode;
+};
 
-  useEffect(() => {
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          get(name) {
-            return document.cookie
-              .split("; ")
-              .find((row) => row.startsWith(name + "="))
-              ?.split("=")[1];
-          },
-          set(name, value) {
-            document.cookie = `${name}=${value}; path=/; SameSite=Lax; Secure`;
-          },
-          remove(name) {
-            document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-          },
-        },
-      }
-    );
-
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-
-    getUser();
-  }, []);
+export default function DashboardWrapper({ user, roles, children }: DashboardWrapperProps) {
+  const [activeRole, setActiveRole] = useState(
+    roles.find((r) => r.is_primary)?.role ?? roles[0]?.role
+  );
 
   async function handleLogout() {
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          get(name) {
-            return document.cookie
-              .split("; ")
-              .find((row) => row.startsWith(name + "="))
-              ?.split("=")[1];
-          },
-          set(name, value) {
-            document.cookie = `${name}=${value}; path=/; SameSite=Lax; Secure`;
-          },
-          remove(name) {
-            document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-          },
-        },
-      }
-    );
-
-    await supabase.auth.signOut();
+    // quick client-side logout
+    document.cookie = "sb:token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     window.location.href = "/auth";
   }
 
@@ -81,7 +39,14 @@ export default function DashboardWrapper({ children }: { children: React.ReactNo
         )}
       </header>
 
-      <main>{children}</main>
+      <main>
+        {activeRole === "dancer" && <div>Dancer dashboard layout</div>}
+        {activeRole === "instructor" && <div>Instructor dashboard layout</div>}
+        {activeRole === "studio" && <div>Studio dashboard layout</div>}
+        {activeRole === "organizer" && <div>Organizer dashboard layout</div>}
+
+        {children}
+      </main>
     </div>
   );
 }
