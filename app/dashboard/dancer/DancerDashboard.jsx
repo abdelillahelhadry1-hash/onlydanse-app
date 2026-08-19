@@ -6,7 +6,7 @@ import { FollowingSection } from "./FollowingSection";
 import { RecommendedEvents } from "./RecommendedEvents";
 import { DiscoveryFeed } from "./DiscoveryFeed";
 
-export function DancerDashboard() {
+export default function DancerDashboard() {
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-[2fr_1.5fr] gap-6">
