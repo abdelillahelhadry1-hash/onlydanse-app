@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DancerDashboard } from "./dancer/DancerDashboard";
+import DancerDashboard from "./dancer/DancerDashboard";
+// Later you can import the other dashboards when ready:
+// import InstructorDashboard from "./instructor/page";
+// import StudioDashboard from "./studio/page";
+// import OrganizerDashboard from "./organizer/page";
 
 export default function DashboardClient({
   user,
