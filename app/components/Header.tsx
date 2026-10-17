@@ -54,28 +54,40 @@ export default function Header() {
 
         {/* Left side: Logo + Navigation */}
         <div className="flex items-center gap-8">
-          <Link href="/" className="text-xl font-semibold tracking-tight">
+          /
             OnlyDanse
           </Link>
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-700">
-            <Link href="/shop" className="hover:text-black transition-colors">
+            /shop
               Shop
             </Link>
 
-            <Link href="/blog" className="hover:text-black transition-colors">
+            /blog
               Blog
             </Link>
 
-            <Link href="/contact" className="hover:text-black transition-colors">
+            /contact
               Contact
             </Link>
 
-            <Link href="/about" className="hover:text-black transition-colors">
+            /about
               About
             </Link>
 
-            {/* Dashboard visible only when      <button
+            {/* Dashboard visible only when logged in */}
+            {loggedIn && (
+              /dashboard
+                Dashboard
+              </Link>
+            )}
+          </nav>
+        </div>
+
+        {/* Right side: Search + Role Switcher + Auth */}
+        <div className="flex items-center gap-4">
+          {/* Search button */}
+          <button
             onClick={() => document.dispatchEvent(new Event("openSearchModal"))}
             className="hidden md:inline-flex px-4 py-2 rounded-full border text-sm text-gray-700 hover:bg-gray-100 transition"
           >
