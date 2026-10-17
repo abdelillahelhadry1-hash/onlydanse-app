@@ -19,7 +19,7 @@ export default function Header() {
   useEffect(() => {
     async function loadRoles() {
       const res = await fetch("/api/get-roles", {
-        credentials: "include", // ⭐ IMPORTANT FIX
+        credentials: "include",
       });
 
       const data = await res.json();
@@ -42,7 +42,7 @@ export default function Header() {
     await fetch("/api/switch-role", {
       method: "POST",
       body: JSON.stringify({ role }),
-      credentials: "include", // ⭐ Also needed here
+      credentials: "include",
     });
 
     window.location.reload();
@@ -51,7 +51,7 @@ export default function Header() {
   return (
     <header className="w-full border-b bg-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        
+
         {/* Left side: Logo + Navigation */}
         <div className="flex items-center gap-8">
           <Link href="/" className="text-xl font-semibold tracking-tight">
@@ -62,32 +62,20 @@ export default function Header() {
             <Link href="/shop" className="hover:text-black transition-colors">
               Shop
             </Link>
+
             <Link href="/blog" className="hover:text-black transition-colors">
               Blog
             </Link>
+
             <Link href="/contact" className="hover:text-black transition-colors">
               Contact
             </Link>
+
             <Link href="/about" className="hover:text-black transition-colors">
               About
             </Link>
 
-            {/* Dashboard visible only when logged in */}
-            {loggedIn && (
-              <Link
-                href="/dashboard"
-                className="hover:text-black transition-colors"
-              >
-                Dashboard
-              </Link>
-            )}
-          </nav>
-        </div>
-
-        {/* Right side: Search + Role Switcher + Auth */}
-        <div className="flex items-center gap-4">
-          {/* Search button */}
-          <button
+            {/* Dashboard visible only when      <button
             onClick={() => document.dispatchEvent(new Event("openSearchModal"))}
             className="hidden md:inline-flex px-4 py-2 rounded-full border text-sm text-gray-700 hover:bg-gray-100 transition"
           >
@@ -105,14 +93,15 @@ export default function Header() {
               </button>
 
               {open && (
-                <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-md border z-50">
+                <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md border z-50">
                   {roles.map((r: UserRole) => (
                     <button
                       key={r.role}
                       onClick={() => switchRole(r.role)}
                       className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                     >
-                      {r.role}
+                      {r.role === primaryRole ? "✓ " : ""}
+                      {r.role.charAt(0).toUpperCase() + r.role.slice(1)}
                     </button>
                   ))}
                 </div>
@@ -123,17 +112,11 @@ export default function Header() {
           {/* Auth buttons (only when logged out) */}
           {!loggedIn && (
             <>
-              <Link
-                href="/auth"
-                className="text-sm font-medium text-gray-700 hover:text-black transition-colors"
-              >
+              /auth
                 Login
               </Link>
 
-              <Link
-                href="/auth"
-                className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 transition-colors"
-              >
+              /auth
                 Sign Up
               </Link>
             </>
